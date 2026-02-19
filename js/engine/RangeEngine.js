@@ -39,9 +39,16 @@ export function evaluate(situation, playerAction) {
         rangeNote
       };
     } else {
-      const wrongMsg = correct === 'raise'
-        ? `Эта рука входит в открывающий диапазон ${heroPos}. Нужно рейзить, а не фолдить.`
-        : `${handKey} слишком слабая для открытия с ${heroPos}. ${rangeNote}`;
+      let wrongMsg;
+      if (playerAction === '3bet' || playerAction === 'call') {
+        const actionLabel = playerAction === '3bet' ? '3-бет' : 'колл';
+        const correctLabel = correct === 'raise' ? 'рейз' : 'фолд';
+        wrongMsg = `${actionLabel} невозможен — ещё никто не рейзил. Правильное действие: ${correctLabel}.`;
+      } else {
+        wrongMsg = correct === 'raise'
+          ? `Эта рука входит в открывающий диапазон ${heroPos}. Нужно рейзить, а не фолдить.`
+          : `${handKey} слишком слабая для открытия с ${heroPos}. ${rangeNote}`;
+      }
       return {
         correct: false,
         correctAction: correct,
