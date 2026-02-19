@@ -1,0 +1,246 @@
+{
+  "version": "1.0",
+  "format": "tournament_9max_ante_BB_50BB+",
+
+  "openRaise": {
+    "UTG": {
+      "sizingBB": 2.5,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo",
+                "KQs","KJs","KTs","K9s",
+                "QJs","QTs","Q9s",
+                "JTs","J9s",
+                "T9s","T8s",
+                "98s","97s","87s","76s","65s"],
+      "note": "~13%. Только сильные руки — 8 игроков ещё не действовали."
+    },
+    "UTG1": {
+      "sizingBB": 2.5,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77","66",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo",
+                "KQs","KJs","KTs","K9s","K8s",
+                "QJs","QTs","Q9s","Q8s",
+                "JTs","J9s","J8s",
+                "T9s","T8s",
+                "98s","97s","87s","86s","76s","75s","65s","64s","54s"],
+      "note": "~15%. Чуть шире UTG — одним игроком меньше за спиной."
+    },
+    "UTG2": {
+      "sizingBB": 2.5,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77","66","55",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo","ATo",
+                "KQs","KJs","KTs","K9s","K8s","K7s",
+                "QJs","QTs","Q9s","Q8s",
+                "JTs","J9s","J8s",
+                "T9s","T8s","T7s",
+                "98s","97s","96s","87s","86s","76s","75s","65s","64s","54s"],
+      "note": "~16%. Добавляем 55, A6s, K7s."
+    },
+    "LJ": {
+      "sizingBB": 2.5,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77","66","55","44",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo","ATo","A9o",
+                "KQs","KJs","KTs","K9s","K8s","K7s","K6s",
+                "QJs","QTs","Q9s","Q8s","Q7s",
+                "JTs","J9s","J8s","J7s",
+                "T9s","T8s","T7s",
+                "98s","97s","96s","87s","86s","85s","76s","75s","65s","64s","54s","53s"],
+      "note": "~19%. Средняя позиция, расширяем с осторожностью."
+    },
+    "HJ": {
+      "sizingBB": 2.5,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77","66","55","44","33",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo","ATo","A9o","A8o",
+                "KQs","KJs","KTs","K9s","K8s","K7s","K6s","K5s","K4s",
+                "QJs","QTs","Q9s","Q8s","Q7s","Q6s",
+                "JTs","J9s","J8s","J7s",
+                "T9s","T8s","T7s","T6s",
+                "98s","97s","96s","87s","86s","85s","76s","75s","74s","65s","64s","54s","53s","43s"],
+      "note": "~23%. Активная поздняя средняя позиция."
+    },
+    "CO": {
+      "sizingBB": 2.5,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77","66","55","44","33","22",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo","ATo","A9o","A8o","A7o","A6o","A5o",
+                "KQs","KJs","KTs","K9s","K8s","K7s","K6s","K5s","K4s","K3s","K2s",
+                "KQo","KJo","KTo",
+                "QJs","QTs","Q9s","Q8s","Q7s","Q6s","Q5s",
+                "QJo","QTo",
+                "JTs","J9s","J8s","J7s","J6s",
+                "JTo",
+                "T9s","T8s","T7s","T6s",
+                "T9o",
+                "98s","97s","96s","95s","87s","86s","85s","76s","75s","74s","65s","64s","54s","53s","43s"],
+      "note": "~29%. Отличная позиция для атаки блайндов."
+    },
+    "BTN": {
+      "sizingBB": 2.5,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77","66","55","44","33","22",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo","ATo","A9o","A8o","A7o","A6o","A5o","A4o","A3o","A2o",
+                "KQs","KJs","KTs","K9s","K8s","K7s","K6s","K5s","K4s","K3s","K2s",
+                "KQo","KJo","KTo","K9o","K8o",
+                "QJs","QTs","Q9s","Q8s","Q7s","Q6s","Q5s","Q4s","Q3s",
+                "QJo","QTo","Q9o",
+                "JTs","J9s","J8s","J7s","J6s","J5s",
+                "JTo","J9o",
+                "T9s","T8s","T7s","T6s","T5s",
+                "T9o","T8o",
+                "98s","97s","96s","95s","94s","87s","86s","85s","84s","76s","75s","74s","65s","64s","63s","54s","53s","52s","43s","42s","32s"],
+      "note": "~48%. Максимально широко — лучшая позиция."
+    },
+    "SB": {
+      "sizingBB": 3.0,
+      "raise": ["AA","KK","QQ","JJ","TT","99","88","77","66","55","44","33","22",
+                "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+                "AKo","AQo","AJo","ATo","A9o","A8o","A7o",
+                "KQs","KJs","KTs","K9s","K8s","K7s","K6s","K5s",
+                "KQo","KJo","KTo","K9o",
+                "QJs","QTs","Q9s","Q8s","Q7s","Q6s",
+                "QJo","QTo",
+                "JTs","J9s","J8s","J7s",
+                "JTo",
+                "T9s","T8s","T7s",
+                "T9o",
+                "98s","97s","96s","87s","86s","76s","75s","65s","54s"],
+      "note": "~37%. Из SB рейзим размером 3BB — постфлоп без позиции против BB."
+    }
+  },
+
+  "vsLimp": {
+    "HJ_vs_limp": {
+      "isoSizingBB": 4,
+      "iso": ["AA","KK","QQ","JJ","TT","99","88","77","66",
+              "AKs","AQs","AJs","ATs","A9s","A8s","A5s","A4s",
+              "AKo","AQo","AJo","ATo",
+              "KQs","KJs","KTs","K9s",
+              "QJs","QTs","Q9s",
+              "JTs","J9s",
+              "T9s","98s","87s","76s","65s"],
+      "call": ["55","44","33","22","A7s","A6s","A3s","A2s","T8s","97s","86s","75s","64s","54s"],
+      "note": "С HJ изолируем умеренно — за спиной CO, BTN, блайнды."
+    },
+    "CO_vs_limp": {
+      "isoSizingBB": 4,
+      "iso": ["AA","KK","QQ","JJ","TT","99","88","77","66","55",
+              "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+              "AKo","AQo","AJo","ATo","A9o",
+              "KQs","KJs","KTs","K9s","K8s",
+              "KQo","KJo",
+              "QJs","QTs","Q9s","Q8s",
+              "QJo",
+              "JTs","J9s","J8s",
+              "T9s","T8s",
+              "98s","97s","87s","86s","76s","75s","65s","54s"],
+      "call": ["44","33","22","K7s","K6s","Q7s","T7s","96s","85s","74s","64s","53s","43s"],
+      "note": "С CO изолируем широко — позиция отличная, блайнды рядом."
+    },
+    "BTN_vs_limp": {
+      "isoSizingBB": 4,
+      "iso": ["AA","KK","QQ","JJ","TT","99","88","77","66","55","44","33","22",
+              "AKs","AQs","AJs","ATs","A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+              "AKo","AQo","AJo","ATo","A9o","A8o","A7o","A6o",
+              "KQs","KJs","KTs","K9s","K8s","K7s","K6s","K5s",
+              "KQo","KJo","KTo","K9o",
+              "QJs","QTs","Q9s","Q8s","Q7s","Q6s",
+              "QJo","QTo",
+              "JTs","J9s","J8s","J7s",
+              "JTo",
+              "T9s","T8s","T7s","T6s",
+              "T9o",
+              "98s","97s","96s","87s","86s","85s","76s","75s","65s","64s","54s","53s","43s"],
+      "call": ["K4s","K3s","K2s","Q5s","Q4s","Q3s","J6s","J5s","T5s","95s","84s","74s","63s","52s"],
+      "note": "С BTN изолируем максимально широко — лучшая позиция за столом."
+    },
+    "SB_vs_limp": {
+      "isoSizingBB": 5,
+      "iso": ["AA","KK","QQ","JJ","TT","99","88","77",
+              "AKs","AQs","AJs","ATs","A9s","A8s","A5s","A4s",
+              "AKo","AQo","AJo","ATo",
+              "KQs","KJs","KTs",
+              "KQo","KJo",
+              "QJs","QTs",
+              "JTs","J9s",
+              "T9s","98s","87s"],
+      "call": ["66","55","44","33","22","A7s","A6s","A3s","A2s","K9s","Q9s","76s","65s","54s"],
+      "note": "Из SB изолируем узко — постфлоп всегда без позиции. Размер 5BB+."
+    },
+    "BB_vs_limp": {
+      "isoSizingBB": 4,
+      "iso": ["AA","KK","QQ","JJ","TT","99","88",
+              "AKs","AQs","AJs","ATs",
+              "AKo","AQo","AJo",
+              "KQs","KJs",
+              "KQo"],
+      "call": ["77","66","55","44","33","22",
+               "A9s","A8s","A7s","A6s","A5s","A4s","A3s","A2s",
+               "ATo","A9o",
+               "KTs","K9s","K8s",
+               "KJo","KTo",
+               "QJs","QTs","Q9s",
+               "QJo",
+               "JTs","J9s","T9s","98s","87s","76s","65s","54s"],
+      "note": "Из BB против лимпа часто просто чекаем. Рейзим только с топ-руками."
+    }
+  },
+
+  "vsRaise": {
+    "BTN_vs_UTG": {
+      "raiserPos": "UTG",
+      "heroPos": "BTN",
+      "threeBet": ["AA","KK","QQ","AKs","AKo","AQs","A5s","A4s","A3s"],
+      "call": ["JJ","TT","99","88","AJs","ATs","A9s","KQs","KJs","QJs","JTs","T9s","98s","87s"],
+      "note": "UTG — очень сильный диапазон. BTN 3-бетит поляризованно (топ + блаффы), коллирует средние руки."
+    },
+    "BTN_vs_CO": {
+      "raiserPos": "CO",
+      "heroPos": "BTN",
+      "threeBet": ["AA","KK","QQ","JJ","AKs","AKo","AQs","AJs","A5s","A4s","A3s","KQs"],
+      "call": ["TT","99","88","77","ATs","A9s","A8s","KJs","KTs","QJs","QTs","JTs","T9s","98s","87s","76s","65s"],
+      "note": "CO открывается широко, BTN защищается широко. 3-бет диапазон больше vs CO чем vs UTG."
+    },
+    "BB_vs_BTN": {
+      "raiserPos": "BTN",
+      "heroPos": "BB",
+      "threeBet": ["AA","KK","QQ","JJ","AKs","AKo","AQs","AJs","A5s","A4s","A3s","A2s","KQs","87s","76s","65s"],
+      "call": ["TT","99","88","77","66","55","44","33","22",
+               "ATs","A9s","A8s","A7s","A6s",
+               "ATo","A9o","A8o","A7o",
+               "KQs","KJs","KTs","K9s","K8s","K7s",
+               "KQo","KJo","KTo",
+               "QJs","QTs","Q9s","Q8s","Q7s",
+               "QJo","QTo",
+               "JTs","J9s","J8s","J7s",
+               "JTo",
+               "T9s","T8s","T7s","T9o",
+               "98s","97s","96s","87s","86s","76s","75s","65s","64s","54s"],
+      "note": "BB защищается очень широко против BTN — уже вложил BB, и BTN открывается широко. Фолдим очень мало."
+    },
+    "BB_vs_CO": {
+      "raiserPos": "CO",
+      "heroPos": "BB",
+      "threeBet": ["AA","KK","QQ","JJ","AKs","AKo","AQs","AJs","A5s","A4s","A3s","KQs","87s","76s"],
+      "call": ["TT","99","88","77","66","55","44","33","22",
+               "ATs","A9s","A8s","A7s","A6s","ATo","A9o","A8o",
+               "KJs","KTs","K9s","K8s","KQo","KJo","KTo",
+               "QJs","QTs","Q9s","Q8s","QJo","QTo",
+               "JTs","J9s","J8s","JTo",
+               "T9s","T8s","T9o",
+               "98s","97s","87s","86s","76s","75s","65s","54s"],
+      "note": "BB vs CO: немного уже, чем vs BTN. CO открывается чуть у́же BTN."
+    },
+    "SB_vs_BTN": {
+      "raiserPos": "BTN",
+      "heroPos": "SB",
+      "threeBet": ["AA","KK","QQ","JJ","TT","AKs","AKo","AQs","AJs","ATs","A5s","A4s","A3s","KQs","KJs"],
+      "call": [],
+      "note": "Из SB против BTN: в основном 3-бет или фолд. Колл создаёт проблемы на постфлопе без позиции против широкого диапазона."
+    }
+  }
+}

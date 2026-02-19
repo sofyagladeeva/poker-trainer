@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poker Trainer — Префлоп</title>
+  <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+
+<div id="app">
+  <!-- Шапка -->
+  <header class="header">
+    <h1>Poker Trainer</h1>
+    <div class="session-stats">
+      <span id="stat-correct">0</span>/<span id="stat-total">0</span>
+      <span class="stat-pct" id="stat-pct"></span>
+      <button class="btn-reset" id="btn-reset" title="Сбросить сессию">↺</button>
+    </div>
+  </header>
+
+  <!-- Основная зона -->
+  <main class="main">
+
+    <!-- Стол (SVG) -->
+    <section class="table-section">
+      <svg id="poker-table" viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- Фетровый овал -->
+        <ellipse cx="300" cy="170" rx="270" ry="145" fill="#2d6a4f" stroke="#1b4332" stroke-width="8"/>
+        <ellipse cx="300" cy="170" rx="245" ry="122" fill="#40916c" stroke="none"/>
+        <!-- Позиции рендерятся через JS -->
+        <g id="seats"></g>
+        <!-- Описание ситуации по центру стола -->
+        <text id="table-desc" x="300" y="175" text-anchor="middle" font-size="13" fill="#d8f3dc" font-family="monospace"></text>
+      </svg>
+    </section>
+
+    <!-- Карты героя -->
+    <section class="hand-section">
+      <div class="hand-label">Твои карты</div>
+      <div class="hand-cards" id="hand-cards">
+        <div class="card" id="card1"></div>
+        <div class="card" id="card2"></div>
+      </div>
+      <div class="hand-normalized" id="hand-normalized"></div>
+    </section>
+
+    <!-- Описание ситуации (текстом) -->
+    <section class="situation-section">
+      <p id="situation-text" class="situation-text"></p>
+    </section>
+
+
+    <!-- Кнопка подсказки -->
+    <div class="hint-row">
+      <button class="btn-hint" id="btn-hint">Показать диапазон</button>
+    </div>
+
+    <!-- Кнопки действий -->
+    <section class="actions-section" id="actions-section">
+      <button class="action-btn" id="btn-fold"  data-action="fold">Fold</button>
+      <button class="action-btn" id="btn-call"  data-action="call">Call</button>
+      <button class="action-btn" id="btn-raise" data-action="raise">Raise / Iso</button>
+      <button class="action-btn" id="btn-3bet"  data-action="3bet">3-Bet</button>
+    </section>
+
+    <!-- Панель фидбека -->
+    <section class="feedback-section hidden" id="feedback-section">
+      <div class="feedback-result" id="feedback-result"></div>
+      <div class="feedback-action" id="feedback-action"></div>
+      <div class="feedback-explanation" id="feedback-explanation"></div>
+      <div class="feedback-range" id="feedback-range"></div>
+      <button class="btn-next" id="btn-next">Следующая рука →</button>
+    </section>
+
+  </main>
+
+  <!-- Словарь терминов (popup) -->
+  <div class="glossary-popup hidden" id="glossary-popup">
+    <div class="glossary-term" id="glossary-term"></div>
+    <div class="glossary-def" id="glossary-def"></div>
+  </div>
+
+</div>
+
+
+  <!-- Модальное окно — диапазон рук -->
+  <div class="modal hidden" id="range-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span id="range-modal-title"></span>
+        <button class="modal-close" id="range-modal-close">✕</button>
+      </div>
+      <div class="range-legend">
+        <span class="leg leg-raise">Raise / 3-Bet</span>
+        <span class="leg leg-call">Call</span>
+        <span class="leg leg-fold">Fold</span>
+        <span class="leg leg-current">Твоя рука</span>
+      </div>
+      <div class="range-grid" id="range-grid"></div>
+      <div class="modal-note" id="range-modal-note"></div>
+    </div>
+  </div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
