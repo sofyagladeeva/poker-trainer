@@ -257,3 +257,93 @@ body {
 .rg-call  { background: #3d3010; color: #e9c46a; }
 .rg-fold  { background: #1a1a1a; color: #333; }
 .rg-current { outline: 2px solid #fff; outline-offset: -1px; color: #fff !important; font-weight: bold; }
+
+/* === Кнопка настроек в шапке === */
+.btn-settings {
+  background: none;
+  border: 1px solid #444;
+  color: #888;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: color .2s;
+}
+.btn-settings:hover { color: var(--accent); border-color: var(--accent); }
+
+/* === Экран настроек === */
+#settings-screen {
+  padding: 24px 0 40px;
+}
+
+.settings-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--green-pale);
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+}
+
+.settings-group {
+  margin-bottom: 24px;
+}
+
+.settings-label {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.settings-hint {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 6px;
+  min-height: 16px;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: var(--text);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.chip:hover:not(:disabled):not(.active) {
+  border-color: #888;
+  color: var(--text);
+}
+.chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(244,162,97,.1);
+}
+.chip:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+.btn-start {
+  margin-top: 8px;
+  padding: 12px 32px;
+  background: var(--correct);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background .2s;
+}
+.btn-start:hover { background: #3da876; }

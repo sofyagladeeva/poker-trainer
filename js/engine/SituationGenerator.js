@@ -3,17 +3,50 @@ import { shuffle, pick, randInt } from '../utils/random.js';
 import { normalizeHand, buildDeck } from './HandEvaluator.js';
 
 // Генерирует случайную ситуацию для тренажёра
-export function generateSituation(rangesData) {
-  const numPlayers = randInt(4, 9);
+// filters: { tableSize: 'random'|4..9, heroPos: 'random'|'BTN'|... }
+export function generateSituation(rangesData, filters = {}) {
+  const tableSizePref = filters.tableSize && filters.tableSize !== 'random' ? Number(filters.tableSize) : null;
+  const heroPosPref   = filters.heroPos   && filters.heroPos   !== 'random' ? filters.heroPos   : null;
+
+  const numPlayers  = tableSizePref || randInt(4, 9);
   const activePosArr = ACTIVE_POSITIONS[numPlayers];
 
-  // Выбираем тип сценария с весами
-  const scenarioTypes = ['openRaise','openRaise','openRaise','vsRaise','vsRaise','vsLimp'];
-  const type = pick(scenarioTypes);
+  const pool = buildTypePool(rangesData, activePosArr, heroPosPref);
 
-  if (type === 'openRaise') return genOpenRaise(numPlayers, activePosArr, rangesData);
-  if (type === 'vsRaise')   return genVsRaise(numPlayers, activePosArr, rangesData);
-  if (type === 'vsLimp')    return genVsLimp(numPlayers, activePosArr, rangesData);
+  if (!pool.length) {
+    // Несовместимая комбинация позиции и стола — пробуем с рандомным столом
+    return generateSituation(rangesData, { tableSize: 'random', heroPos: filters.heroPos });
+  }
+
+  const type = pick(pool);
+  if (type === 'openRaise') return genOpenRaise(numPlayers, activePosArr, rangesData, heroPosPref);
+  if (type === 'vsRaise')   return genVsRaise(numPlayers, activePosArr, rangesData, heroPosPref);
+  if (type === 'vsLimp')    return genVsLimp(numPlayers, activePosArr, rangesData, heroPosPref);
+}
+
+function buildTypePool(rangesData, activePosArr, heroPos) {
+  const pool = [];
+
+  // openRaise: valid если heroPos в rangesData.openRaise и за этим столом
+  const canOpenRaise = !heroPos
+    || (rangesData.openRaise[heroPos] && activePosArr.includes(heroPos));
+  if (canOpenRaise) pool.push('openRaise', 'openRaise', 'openRaise');
+
+  // vsRaise: valid если есть хоть один matchup с этим heroPos за этим столом
+  const hasVsRaise = Object.values(rangesData.vsRaise).some(d =>
+    activePosArr.includes(d.heroPos) && activePosArr.includes(d.raiserPos) &&
+    (!heroPos || d.heroPos === heroPos)
+  );
+  if (hasVsRaise) pool.push('vsRaise', 'vsRaise');
+
+  // vsLimp: valid если есть хоть одна запись для этого heroPos за этим столом
+  const hasVsLimp = Object.keys(rangesData.vsLimp).some(key => {
+    const pos = key.split('_vs_')[0];
+    return activePosArr.includes(pos) && (!heroPos || pos === heroPos);
+  });
+  if (hasVsLimp) pool.push('vsLimp');
+
+  return pool;
 }
 
 function dealHand() {
@@ -27,16 +60,15 @@ function dealHand() {
   };
 }
 
-function genOpenRaise(numPlayers, activePosArr, rangesData) {
-  // Позиции, для которых есть openRaise диапазон, и которые есть за столом
-  const validPositions = Object.keys(rangesData.openRaise).filter(p => activePosArr.includes(p));
-  if (!validPositions.length) return genOpenRaise(randInt(4,9), ACTIVE_POSITIONS[randInt(4,9)], rangesData);
+function genOpenRaise(numPlayers, activePosArr, rangesData, heroPos) {
+  let validPositions = Object.keys(rangesData.openRaise).filter(p => activePosArr.includes(p));
+  if (heroPos) validPositions = validPositions.filter(p => p === heroPos);
+  if (!validPositions.length) return genOpenRaise(randInt(4,9), ACTIVE_POSITIONS[randInt(4,9)], rangesData, heroPos);
 
-  const heroPos = pick(validPositions);
+  const pickedHeroPos = pick(validPositions);
   const hand = dealHand();
 
-  // История действий: все до героя сфолдили
-  const heroIdx = PREFLOP_ORDER.indexOf(heroPos);
+  const heroIdx = PREFLOP_ORDER.indexOf(pickedHeroPos);
   const actionHistory = PREFLOP_ORDER
     .filter(p => activePosArr.includes(p))
     .filter(p => PREFLOP_ORDER.indexOf(p) < heroIdx)
@@ -45,32 +77,31 @@ function genOpenRaise(numPlayers, activePosArr, rangesData) {
   return {
     type: 'openRaise',
     numPlayers,
-    heroPos,
+    heroPos: pickedHeroPos,
     hand,
     actionHistory,
     villainPos: null,
     availableActions: ['fold', 'raise'],
-    description: buildDescription('openRaise', heroPos, null, actionHistory)
+    description: buildDescription('openRaise', pickedHeroPos, null, actionHistory)
   };
 }
 
-function genVsRaise(numPlayers, activePosArr, rangesData) {
-  // Берём ключи vsRaise, у которых обе позиции есть за столом
-  const validKeys = Object.keys(rangesData.vsRaise).filter(key => {
-    const [hero, , villain] = key.split('_vs_');
-    return activePosArr.includes(hero) && activePosArr.includes(villain);
+function genVsRaise(numPlayers, activePosArr, rangesData, heroPos) {
+  let validKeys = Object.keys(rangesData.vsRaise).filter(key => {
+    const data = rangesData.vsRaise[key];
+    return activePosArr.includes(data.heroPos) && activePosArr.includes(data.raiserPos) &&
+      (!heroPos || data.heroPos === heroPos);
   });
 
-  if (!validKeys.length) return genOpenRaise(numPlayers, activePosArr, rangesData);
+  if (!validKeys.length) return genOpenRaise(numPlayers, activePosArr, rangesData, heroPos);
 
   const key = pick(validKeys);
   const data = rangesData.vsRaise[key];
-  const heroPos = data.heroPos;
+  const pickedHeroPos = data.heroPos;
   const villainPos = data.raiserPos;
   const hand = dealHand();
 
-  // Строим историю: все до рейзера фолдят, рейзер рейзит, между рейзером и героем фолдят
-  const heroIdx    = PREFLOP_ORDER.indexOf(heroPos);
+  const heroIdx    = PREFLOP_ORDER.indexOf(pickedHeroPos);
   const villainIdx = PREFLOP_ORDER.indexOf(villainPos);
 
   const actionHistory = PREFLOP_ORDER
@@ -84,34 +115,33 @@ function genVsRaise(numPlayers, activePosArr, rangesData) {
   return {
     type: 'vsRaise',
     numPlayers,
-    heroPos,
+    heroPos: pickedHeroPos,
     hand,
     actionHistory,
     villainPos,
     availableActions: ['fold', 'call', '3bet'],
-    description: buildDescription('vsRaise', heroPos, villainPos, actionHistory)
+    description: buildDescription('vsRaise', pickedHeroPos, villainPos, actionHistory)
   };
 }
 
-function genVsLimp(numPlayers, activePosArr, rangesData) {
-  const validKeys = Object.keys(rangesData.vsLimp).filter(key => {
-    const heroPos = key.split('_vs_')[0];
-    return activePosArr.includes(heroPos);
+function genVsLimp(numPlayers, activePosArr, rangesData, heroPos) {
+  let validKeys = Object.keys(rangesData.vsLimp).filter(key => {
+    const pos = key.split('_vs_')[0];
+    return activePosArr.includes(pos) && (!heroPos || pos === heroPos);
   });
 
-  if (!validKeys.length) return genOpenRaise(numPlayers, activePosArr, rangesData);
+  if (!validKeys.length) return genOpenRaise(numPlayers, activePosArr, rangesData, heroPos);
 
   const key = pick(validKeys);
-  const heroPos = key.split('_vs_')[0];
+  const pickedHeroPos = key.split('_vs_')[0];
   const hand = dealHand();
 
-  const heroIdx = PREFLOP_ORDER.indexOf(heroPos);
+  const heroIdx = PREFLOP_ORDER.indexOf(pickedHeroPos);
 
-  // Выбираем лимпера — кто-то до героя (не блайнды)
   const beforeHero = PREFLOP_ORDER
     .filter(p => activePosArr.includes(p) && PREFLOP_ORDER.indexOf(p) < heroIdx && p !== 'SB' && p !== 'BB');
 
-  if (!beforeHero.length) return genOpenRaise(numPlayers, activePosArr, rangesData);
+  if (!beforeHero.length) return genOpenRaise(numPlayers, activePosArr, rangesData, heroPos);
 
   const limperPos = pick(beforeHero);
   const villainPos = limperPos;
@@ -128,12 +158,12 @@ function genVsLimp(numPlayers, activePosArr, rangesData) {
   return {
     type: 'vsLimp',
     numPlayers,
-    heroPos,
+    heroPos: pickedHeroPos,
     hand,
     actionHistory,
     villainPos,
     availableActions: ['fold', 'call', 'raise'],
-    description: buildDescription('vsLimp', heroPos, villainPos, actionHistory)
+    description: buildDescription('vsLimp', pickedHeroPos, villainPos, actionHistory)
   };
 }
 

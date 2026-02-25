@@ -114,6 +114,7 @@ export function evaluate(situation, playerAction) {
     let correctAction;
     if (isoSet.has(handKey)) correctAction = 'raise'; // iso = рейз
     else if (callSet.has(handKey)) correctAction = 'call';
+    else if (heroPos === 'BB') correctAction = 'call'; // BB уже заплатил 1BB — чек бесплатен
     else correctAction = 'fold';
 
     rangeNote = data.note;
@@ -121,11 +122,16 @@ export function evaluate(situation, playerAction) {
     const isCorrect = playerAction === correctAction;
     const actionLabel = {raise: 'изо-рейз', call: 'колл', fold: 'фолд'}[correctAction];
 
-    const explanation = correctAction === 'raise'
-      ? `${handKey} — изоляционный рейз с ${heroPos} против лимпера (${data.isoSizingBB}BB). ${rangeNote}`
-      : correctAction === 'call'
-      ? `${handKey} — колл лимпа с ${heroPos}. Рука имеет потенциал в мульти-вей поте. ${rangeNote}`
-      : `${handKey} — фолд с ${heroPos}. Рука не входит ни в iso, ни в колл диапазон. ${rangeNote}`;
+    let explanation;
+    if (correctAction === 'raise') {
+      explanation = `${handKey} — изоляционный рейз с ${heroPos} против лимпера (${data.isoSizingBB}BB). ${rangeNote}`;
+    } else if (correctAction === 'call' && heroPos === 'BB') {
+      explanation = `${handKey} — чек с BB. BB уже заплатил 1BB, поэтому колл (чек) всегда доступен. ${rangeNote}`;
+    } else if (correctAction === 'call') {
+      explanation = `${handKey} — колл лимпа с ${heroPos}. Рука имеет потенциал в мульти-вей поте. ${rangeNote}`;
+    } else {
+      explanation = `${handKey} — фолд с ${heroPos}. Рука не входит ни в iso, ни в колл диапазон. ${rangeNote}`;
+    }
 
     if (playerAction === '3bet' && !isCorrect) {
       explanation = `3-бет невозможен — лимп это не рейз. Правильное действие: ${correctAction === 'raise' ? 'изо-рейз' : correctAction === 'call' ? 'колл' : 'фолд'}.`;

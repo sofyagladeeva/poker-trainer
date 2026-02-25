@@ -6,11 +6,82 @@ import { showFeedback, hideFeedback, setActionsVisible, disableActions } from '.
 import { record, reset, render as renderStats } from './ui/SessionTracker.js';
 import { initGlossary } from './ui/GlossaryPopup.js';
 import { initRangeModal, showRangeModal } from './ui/RangeGrid.js';
+import { ACTIVE_POSITIONS } from './utils/constants.js';
 
 let rangesData = null;
 let currentSituation = null;
+let trainingSettings = { tableSize: 'random', heroPos: 'random' };
 
-// Привязываем кнопки сразу
+// === Настройки ===
+
+function showSettingsScreen() {
+  document.getElementById('settings-screen').classList.remove('hidden');
+  document.getElementById('training-screen').classList.add('hidden');
+}
+
+function showTrainingScreen() {
+  document.getElementById('settings-screen').classList.add('hidden');
+  document.getElementById('training-screen').classList.remove('hidden');
+}
+
+// Обновляет доступность чипов позиций при смене размера стола
+function updatePositionChips(tableSize) {
+  const activePosArr = tableSize === 'random'
+    ? null
+    : ACTIVE_POSITIONS[Number(tableSize)];
+
+  document.querySelectorAll('#chips-pos .chip').forEach(chip => {
+    const val = chip.dataset.val;
+    if (val === 'random') { chip.disabled = false; return; }
+    const available = !activePosArr || activePosArr.includes(val);
+    chip.disabled = !available;
+    if (!available && chip.classList.contains('active')) {
+      chip.classList.remove('active');
+      document.querySelector('#chips-pos .chip[data-val="random"]').classList.add('active');
+      trainingSettings.heroPos = 'random';
+    }
+  });
+}
+
+function initSettingsUI() {
+  trainingSettings = { tableSize: 'random', heroPos: 'random' };
+
+  // Предзаполнить чипы стола
+  document.querySelectorAll('#chips-table .chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.val === String(trainingSettings.tableSize));
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#chips-table .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      trainingSettings.tableSize = chip.dataset.val === 'random' ? 'random' : Number(chip.dataset.val);
+      updatePositionChips(chip.dataset.val);
+    });
+  });
+
+  // Предзаполнить чипы позиций
+  updatePositionChips(String(trainingSettings.tableSize));
+  document.querySelectorAll('#chips-pos .chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.val === trainingSettings.heroPos);
+    chip.addEventListener('click', () => {
+      if (chip.disabled) return;
+      document.querySelectorAll('#chips-pos .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      trainingSettings.heroPos = chip.dataset.val;
+    });
+  });
+
+  // Кнопка старта
+  document.getElementById('btn-start').addEventListener('click', () => {
+    reset();
+    showTrainingScreen();
+    nextHand();
+  });
+
+  // Кнопка настроек во время тренировки
+  document.getElementById('btn-settings').addEventListener('click', showSettingsScreen);
+}
+
+// === Тренировка ===
+
 document.querySelectorAll('.action-btn').forEach(btn => {
   btn.addEventListener('click', () => onAction(btn.dataset.action));
 });
@@ -25,20 +96,19 @@ async function init() {
   await initGlossary();
   initRangeModal();
   renderStats();
-  nextHand();
+  initSettingsUI();
+  showSettingsScreen();
 }
 
 function nextHand() {
   if (!rangesData) return;
   try {
     hideFeedback();
-    currentSituation = generateSituation(rangesData);
+    currentSituation = generateSituation(rangesData, trainingSettings);
     renderTable(currentSituation);
     renderHand(currentSituation.hand);
     document.getElementById('situation-text').innerHTML = buildSituationHTML(currentSituation);
-    // Всегда показываем все 4 кнопки
     setActionsVisible(['fold','call','raise','3bet']);
-    // BB vs limp: "call" = бесплатный чек
     const callBtn = document.getElementById('btn-call');
     if (currentSituation.type === 'vsLimp' && currentSituation.heroPos === 'BB') {
       callBtn.textContent = 'Чек (Call)';
@@ -47,7 +117,7 @@ function nextHand() {
     }
   } catch (e) {
     console.error('nextHand error:', e);
-    nextHand(); // retry once
+    nextHand();
   }
 }
 
