@@ -40,10 +40,12 @@ export function evaluate(situation, playerAction) {
       };
     } else {
       let wrongMsg;
-      if (playerAction === '3bet' || playerAction === 'call') {
-        const actionLabel = playerAction === '3bet' ? '3-бет' : 'колл';
+      if (playerAction === '3bet') {
         const correctLabel = correct === 'raise' ? 'рейз' : 'фолд';
-        wrongMsg = `${actionLabel} невозможен — ещё никто не рейзил. Правильное действие: ${correctLabel}.`;
+        wrongMsg = `3-бет невозможен — ещё никто не рейзил. Правильное действие: ${correctLabel}.`;
+      } else if (playerAction === 'call') {
+        const correctLabel = correct === 'raise' ? 'рейз' : 'фолд';
+        wrongMsg = `Лимп не входит в эту стратегию — играем рейз или фолд. Правильное действие: ${correctLabel}.`;
       } else {
         wrongMsg = correct === 'raise'
           ? `Эта рука входит в открывающий диапазон ${heroPos}. Нужно рейзить, а не фолдить.`

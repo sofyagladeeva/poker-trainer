@@ -108,7 +108,13 @@ function nextHand() {
     renderTable(currentSituation);
     renderHand(currentSituation.hand);
     document.getElementById('situation-text').innerHTML = buildSituationHTML(currentSituation);
-    setActionsVisible(['fold','call','raise','3bet']);
+    const visibleActions = {
+      openRaise: ['fold', 'call', 'raise'],
+      vsRaise:   ['fold', 'call', '3bet'],
+      vsLimp:    ['fold', 'call', 'raise']
+    }[currentSituation.type] || ['fold','call','raise','3bet'];
+    setActionsVisible(visibleActions);
+
     const callBtn = document.getElementById('btn-call');
     if (currentSituation.type === 'vsLimp' && currentSituation.heroPos === 'BB') {
       callBtn.textContent = 'Чек (Call)';
