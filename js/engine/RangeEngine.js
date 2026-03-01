@@ -141,5 +141,83 @@ export function evaluate(situation, playerAction) {
     return { correct: isCorrect, correctAction, explanation, rangeNote };
   }
 
+  if (type === 'vs3Bet') {
+    const key = `${heroPos}_vs_${villainPos}`;
+    const data = rangesData.vs3Bet[key];
+
+    if (!data) {
+      return {
+        correct: playerAction === 'fold',
+        correctAction: 'fold',
+        explanation: `Нет диапазона для ${key}. По умолчанию — фолд.`,
+        rangeNote: ''
+      };
+    }
+
+    const fourBetSet = new Set(data.fourBet);
+    const callSet    = new Set(data.call);
+
+    let correctAction;
+    if (fourBetSet.has(handKey)) correctAction = '4bet';
+    else if (callSet.has(handKey)) correctAction = 'call';
+    else correctAction = 'fold';
+
+    rangeNote = data.note;
+
+    let explanation;
+    if (correctAction === '4bet') {
+      explanation = `${handKey} — 4-бет с ${heroPos} против 3-бета от ${villainPos}. ${rangeNote}`;
+    } else if (correctAction === 'call') {
+      explanation = `${handKey} — колл 3-бета с ${heroPos} против ${villainPos}. ${rangeNote}`;
+    } else {
+      explanation = `${handKey} — фолд с ${heroPos} против 3-бета от ${villainPos}. ${rangeNote}`;
+    }
+
+    if (playerAction === 'raise' && playerAction !== correctAction) {
+      explanation = `Ты уже рейзила. Теперь решение: фолд, колл или 4-бет. Правильное действие: ${correctAction === '4bet' ? '4-бет' : correctAction === 'call' ? 'колл' : 'фолд'}.`;
+    }
+
+    return { correct: playerAction === correctAction, correctAction, explanation, rangeNote };
+  }
+
+  if (type === 'vs4Bet') {
+    const key = `${heroPos}_vs_${villainPos}`;
+    const data = rangesData.vs4Bet[key];
+
+    if (!data) {
+      return {
+        correct: playerAction === 'fold',
+        correctAction: 'fold',
+        explanation: `Нет диапазона для ${key}. По умолчанию — фолд.`,
+        rangeNote: ''
+      };
+    }
+
+    const jamSet  = new Set(data.jam);
+    const callSet = new Set(data.call || []);
+
+    let correctAction;
+    if (jamSet.has(handKey)) correctAction = 'jam';
+    else if (callSet.has(handKey)) correctAction = 'call';
+    else correctAction = 'fold';
+
+    rangeNote = data.note;
+
+    let explanation;
+    if (correctAction === 'jam') {
+      explanation = `${handKey} — джэм (олл-ин) с ${heroPos} против 4-бета от ${villainPos}. ${rangeNote}`;
+    } else if (correctAction === 'call') {
+      explanation = `${handKey} — колл 4-бета с ${heroPos}. ${rangeNote}`;
+    } else {
+      explanation = `${handKey} — фолд с ${heroPos} против 4-бета от ${villainPos}. ${rangeNote}`;
+    }
+
+    if ((playerAction === 'raise' || playerAction === '3bet') && playerAction !== correctAction) {
+      explanation = `Ты уже 3-бетила. Теперь решение: фолд, колл или джэм. Правильное действие: ${correctAction === 'jam' ? 'джэм' : correctAction === 'call' ? 'колл' : 'фолд'}.`;
+    }
+
+    return { correct: playerAction === correctAction, correctAction, explanation, rangeNote };
+  }
+
   return { correct: false, correctAction: 'fold', explanation: 'Неизвестный тип ситуации.', rangeNote: '' };
 }

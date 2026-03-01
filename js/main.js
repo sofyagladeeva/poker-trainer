@@ -5,7 +5,7 @@ import { renderHand } from './ui/CardRenderer.js';
 import { showFeedback, hideFeedback, setActionsVisible, disableActions } from './ui/FeedbackPanel.js';
 import { record, reset, render as renderStats } from './ui/SessionTracker.js';
 import { initGlossary } from './ui/GlossaryPopup.js';
-import { initRangeModal, showRangeModal } from './ui/RangeGrid.js';
+import { initRangeModal, showRangeModal } from './ui/RangeGrid.js?v=2';
 import { ACTIVE_POSITIONS } from './utils/constants.js';
 
 let rangesData = null;
@@ -111,7 +111,9 @@ function nextHand() {
     const visibleActions = {
       openRaise: ['fold', 'call', 'raise'],
       vsRaise:   ['fold', 'call', '3bet'],
-      vsLimp:    ['fold', 'call', 'raise']
+      vsLimp:    ['fold', 'call', 'raise'],
+      vs3Bet:    ['fold', 'call', '3bet'],
+      vs4Bet:    ['fold', 'call', '3bet']
     }[currentSituation.type] || ['fold','call','raise','3bet'];
     setActionsVisible(visibleActions);
 
@@ -120,6 +122,18 @@ function nextHand() {
       callBtn.textContent = 'Чек (Call)';
     } else {
       callBtn.textContent = 'Call';
+    }
+
+    const threeBetBtn = document.getElementById('btn-3bet');
+    if (currentSituation.type === 'vs3Bet') {
+      threeBetBtn.textContent = '4-Bet';
+      threeBetBtn.dataset.action = '4bet';
+    } else if (currentSituation.type === 'vs4Bet') {
+      threeBetBtn.textContent = 'Jam';
+      threeBetBtn.dataset.action = 'jam';
+    } else {
+      threeBetBtn.textContent = '3-Bet';
+      threeBetBtn.dataset.action = '3bet';
     }
   } catch (e) {
     console.error('nextHand error:', e);
@@ -145,6 +159,12 @@ function buildSituationHTML(sit) {
   }
   if (sit.type === 'vsLimp') {
     return `<strong>${posLink(sit.villainPos)}</strong> <span data-term="limp">залимпил</span> (1BB). Все остальные сфолдили. Ты на <strong>${posLink(sit.heroPos)}</strong>. Что делаешь?`;
+  }
+  if (sit.type === 'vs3Bet') {
+    return `Ты сделала <span data-term="open-raise">рейз</span> с <strong>${posLink(sit.heroPos)}</strong>. <strong>${posLink(sit.villainPos)}</strong> сделал <span data-term="3bet">3-бет</span> (7.5BB). Все остальные сфолдили. Твоё действие?`;
+  }
+  if (sit.type === 'vs4Bet') {
+    return `Ты сделала <span data-term="3bet">3-бет</span> с <strong>${posLink(sit.heroPos)}</strong>. <strong>${posLink(sit.villainPos)}</strong> ответил <strong>4-бетом</strong> (20BB). Все сфолдили. Джэм, колл или фолд?`;
   }
   return sit.description || '';
 }

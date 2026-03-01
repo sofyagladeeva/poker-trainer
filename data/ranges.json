@@ -398,5 +398,151 @@
       "call": ["TT","99","88","77","AJs","ATs","A9s","A8s","KJs","KTs","QJs","QTs","JTs","J9s","T9s","98s","87s"],
       "note": "CO vs LJ/MP: EP-MP диапазон, аналогично vs UTG."
     }
+  },
+
+  "vs3Bet": {
+    "UTG_vs_BB": {
+      "heroPos": "UTG",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","99","AQs","AJs","ATs","KQs","KJs","QJs"],
+      "note": "UTG vs BB 3-бет. UTG в позиции постфлоп. 4-бет: топ-руки + A-блокеры. Колл: пары и коннекторы IP."
+    },
+    "UTG_vs_BTN": {
+      "heroPos": "UTG",
+      "threeBetterPos": "BTN",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","AQs","AJs","KQs"],
+      "note": "UTG vs BTN 3-бет. UTG OOP постфлоп. Очень tight колл, 4-бет топ-руки."
+    },
+    "UTG1_vs_BB": {
+      "heroPos": "UTG1",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","99","AQs","AJs","ATs","KQs","KJs","QJs"],
+      "note": "UTG+1 vs BB 3-бет. UTG+1 в позиции постфлоп. 4-бет: топ + блокеры."
+    },
+    "UTG2_vs_BB": {
+      "heroPos": "UTG2",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","99","AQs","AJs","ATs","KQs","KJs","QJs"],
+      "note": "UTG+2 vs BB 3-бет. IP постфлоп. 4-бет: топ + блокеры."
+    },
+    "LJ_vs_BB": {
+      "heroPos": "LJ",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s","A3s"],
+      "call":    ["TT","99","AQs","AJs","ATs","KQs","KJs","QJs","JTs"],
+      "note": "LJ vs BB 3-бет. LJ в позиции постфлоп. 4-бет топ + блокеры, колл пары и коннекторы."
+    },
+    "LJ_vs_BTN": {
+      "heroPos": "LJ",
+      "threeBetterPos": "BTN",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","AQs","AJs","KQs"],
+      "note": "LJ vs BTN 3-бет. LJ OOP постфлоп. Tight защита против BTN."
+    },
+    "HJ_vs_BB": {
+      "heroPos": "HJ",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s","A3s"],
+      "call":    ["TT","99","88","AQs","AJs","ATs","KQs","KJs","QJs","JTs"],
+      "note": "HJ vs BB 3-бет. HJ в позиции постфлоп. 4-бет топ + блокеры, широкий колл IP."
+    },
+    "HJ_vs_BTN": {
+      "heroPos": "HJ",
+      "threeBetterPos": "BTN",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","AQs","AJs","KQs","KJs"],
+      "note": "HJ vs BTN 3-бет. HJ OOP постфлоп. 4-бет топ-руки, tight колл."
+    },
+    "CO_vs_BTN": {
+      "heroPos": "CO",
+      "threeBetterPos": "BTN",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s","A3s"],
+      "call":    ["TT","99","AQs","AJs","ATs","KQs","KJs","QJs","JTs"],
+      "note": "CO vs BTN 3-бет. CO OOP постфлоп. 4-бет топ + блокеры, умеренный колл."
+    },
+    "CO_vs_SB": {
+      "heroPos": "CO",
+      "threeBetterPos": "SB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s","A3s","A2s"],
+      "call":    ["TT","99","88","AQs","AJs","ATs","KQs","KJs","QJs","JTs","T9s"],
+      "note": "CO vs SB 3-бет. SB 3-бетит широко, CO в позиции. Широкий колл и 4-бет."
+    },
+    "BTN_vs_BB": {
+      "heroPos": "BTN",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s","A3s","A2s"],
+      "call":    ["TT","99","88","77","AQs","AJs","ATs","A9s","KQs","KJs","KTs","QJs","QTs","JTs","T9s","98s","87s"],
+      "note": "BB 3-бетит широко (~15%). BTN в позиции: 4-бет топ + A-блокеры, широкий колл с парами и коннекторами."
+    },
+    "BTN_vs_SB": {
+      "heroPos": "BTN",
+      "threeBetterPos": "SB",
+      "fourBet": ["AA","KK","QQ","JJ","TT","AKs","AKo","A5s","A4s","A3s"],
+      "call":    ["99","88","77","66","AQs","AJs","ATs","A9s","A8s","KQs","KJs","KTs","K9s","QJs","QTs","JTs","T9s","98s","87s","76s"],
+      "note": "SB 3-бетит очень широко (50+ рук). BTN в позиции: колл очень широко, 4-бет TT+ и A-блокеры."
+    },
+    "CO_vs_BB": {
+      "heroPos": "CO",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","99","88","AQs","AJs","ATs","KQs","KJs","KTs","QJs","JTs","T9s"],
+      "note": "CO vs BB 3-бет: CO в позиции. 4-бет: топ-руки + блокеры. Колл: пары и коннекторы."
+    },
+    "SB_vs_BB": {
+      "heroPos": "SB",
+      "threeBetterPos": "BB",
+      "fourBet": ["AA","KK","QQ","JJ","AKs","AKo","A5s","A4s"],
+      "call":    ["TT","99","AQs","AJs","ATs","KQs","KJs"],
+      "note": "SB OOP vs BB 3-бет: играем tight. 4-бет топ-руки, узкий колл из-за невыгодной позиции."
+    }
+  },
+
+  "vs4Bet": {
+    "BB_vs_UTG": {
+      "heroPos": "BB",
+      "fourBetterPos": "UTG",
+      "jam":  ["AA","KK","AKs","AKo"],
+      "call": [],
+      "note": "BB 3-бетил UTG, UTG 4-бет — очень сильный диапазон. Джэм только AA, KK, AK. QQ — fold."
+    },
+    "BB_vs_CO": {
+      "heroPos": "BB",
+      "fourBetterPos": "CO",
+      "jam":  ["AA","KK","QQ","AKs","AKo"],
+      "call": [],
+      "note": "BB 3-бетил CO, CO 4-бет. Джэм: QQ+, AK. Блефы — фолд."
+    },
+    "BTN_vs_UTG": {
+      "heroPos": "BTN",
+      "fourBetterPos": "UTG",
+      "jam":  ["AA","KK","QQ","AKs","AKo"],
+      "call": [],
+      "note": "BTN 3-бетил UTG, UTG 4-бет — сильный диапазон. Джэм: QQ+, AK. Блефы — фолд."
+    },
+    "BB_vs_BTN": {
+      "heroPos": "BB",
+      "fourBetterPos": "BTN",
+      "jam":  ["AA","KK","QQ","AKs","AKo"],
+      "call": [],
+      "note": "BB 3-бетил широко (много блефов) — против 4-бета фолдим блефы. Джэм: QQ+, AK."
+    },
+    "BTN_vs_CO": {
+      "heroPos": "BTN",
+      "fourBetterPos": "CO",
+      "jam":  ["AA","KK","QQ","AKs","AKo"],
+      "call": [],
+      "note": "BTN 3-бетил CO, CO 4-бетит. Джэм: QQ+, AK. Всё остальное — фолд."
+    },
+    "SB_vs_BTN": {
+      "heroPos": "SB",
+      "fourBetterPos": "BTN",
+      "jam":  ["AA","KK","AKs","AKo"],
+      "call": [],
+      "note": "SB OOP vs 4-бет: очень tight. Только AA, KK, AK. QQ — спорная рука, в базе фолд."
+    }
   }
 }

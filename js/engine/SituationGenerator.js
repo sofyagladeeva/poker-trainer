@@ -22,6 +22,8 @@ export function generateSituation(rangesData, filters = {}) {
   if (type === 'openRaise') return genOpenRaise(numPlayers, activePosArr, rangesData, heroPosPref);
   if (type === 'vsRaise')   return genVsRaise(numPlayers, activePosArr, rangesData, heroPosPref);
   if (type === 'vsLimp')    return genVsLimp(numPlayers, activePosArr, rangesData, heroPosPref);
+  if (type === 'vs3Bet')    return genVs3Bet(numPlayers, activePosArr, rangesData, heroPosPref);
+  if (type === 'vs4Bet')    return genVs4Bet(numPlayers, activePosArr, rangesData, heroPosPref);
 }
 
 function buildTypePool(rangesData, activePosArr, heroPos) {
@@ -46,6 +48,20 @@ function buildTypePool(rangesData, activePosArr, heroPos) {
   });
   if (hasVsLimp) pool.push('vsLimp');
 
+  // vs3Bet: hero opened, villain 3-bet
+  const hasVs3Bet = Object.values(rangesData.vs3Bet).some(d =>
+    activePosArr.includes(d.heroPos) && activePosArr.includes(d.threeBetterPos) &&
+    (!heroPos || d.heroPos === heroPos)
+  );
+  if (hasVs3Bet) pool.push('vs3Bet');
+
+  // vs4Bet: hero 3-bet, villain 4-bet
+  const hasVs4Bet = Object.values(rangesData.vs4Bet).some(d =>
+    activePosArr.includes(d.heroPos) && activePosArr.includes(d.fourBetterPos) &&
+    (!heroPos || d.heroPos === heroPos)
+  );
+  if (hasVs4Bet) pool.push('vs4Bet');
+
   return pool;
 }
 
@@ -58,6 +74,17 @@ function dealHand() {
     card2,
     normalized: normalizeHand(card1, card2)
   };
+}
+
+// Раздаёт руку, которая входит в указанный диапазон
+function dealHandFrom(range) {
+  if (!range || !range.length) return dealHand();
+  const rangeSet = new Set(range);
+  for (let i = 0; i < 200; i++) {
+    const hand = dealHand();
+    if (rangeSet.has(hand.normalized)) return hand;
+  }
+  return dealHand(); // запасной вариант
 }
 
 function genOpenRaise(numPlayers, activePosArr, rangesData, heroPos) {
@@ -167,6 +194,94 @@ function genVsLimp(numPlayers, activePosArr, rangesData, heroPos) {
   };
 }
 
+function genVs3Bet(numPlayers, activePosArr, rangesData, heroPos) {
+  let validKeys = Object.keys(rangesData.vs3Bet).filter(key => {
+    const d = rangesData.vs3Bet[key];
+    return activePosArr.includes(d.heroPos) && activePosArr.includes(d.threeBetterPos) &&
+      (!heroPos || d.heroPos === heroPos);
+  });
+
+  if (!validKeys.length) return genOpenRaise(numPlayers, activePosArr, rangesData, heroPos);
+
+  const key = pick(validKeys);
+  const data = rangesData.vs3Bet[key];
+  const pickedHeroPos = data.heroPos;
+  const threeBetterPos = data.threeBetterPos;
+  // Раздаём только руки из диапазона открытия героя — BTN не мог открыться с мусором
+  const hand = dealHandFrom(rangesData.openRaise[pickedHeroPos]?.raise || []);
+
+  const heroIdx       = PREFLOP_ORDER.indexOf(pickedHeroPos);
+  const threeBetterIdx = PREFLOP_ORDER.indexOf(threeBetterPos);
+
+  // Build action history: folds before hero → hero raises → folds between → villain 3-bets
+  const actionHistory = [];
+  PREFLOP_ORDER
+    .filter(p => activePosArr.includes(p) && PREFLOP_ORDER.indexOf(p) < heroIdx)
+    .forEach(p => actionHistory.push({ position: p, action: 'fold' }));
+  actionHistory.push({ position: pickedHeroPos, action: 'raise', amount: 2.5 });
+  PREFLOP_ORDER
+    .filter(p => activePosArr.includes(p))
+    .filter(p => PREFLOP_ORDER.indexOf(p) > heroIdx && PREFLOP_ORDER.indexOf(p) < threeBetterIdx)
+    .forEach(p => actionHistory.push({ position: p, action: 'fold' }));
+  actionHistory.push({ position: threeBetterPos, action: '3bet', amount: 7.5 });
+
+  return {
+    type: 'vs3Bet',
+    numPlayers,
+    heroPos: pickedHeroPos,
+    hand,
+    actionHistory,
+    villainPos: threeBetterPos,
+    availableActions: ['fold', 'call', '4bet'],
+    description: buildDescription('vs3Bet', pickedHeroPos, threeBetterPos, actionHistory)
+  };
+}
+
+function genVs4Bet(numPlayers, activePosArr, rangesData, heroPos) {
+  let validKeys = Object.keys(rangesData.vs4Bet).filter(key => {
+    const d = rangesData.vs4Bet[key];
+    return activePosArr.includes(d.heroPos) && activePosArr.includes(d.fourBetterPos) &&
+      (!heroPos || d.heroPos === heroPos);
+  });
+
+  if (!validKeys.length) return genOpenRaise(numPlayers, activePosArr, rangesData, heroPos);
+
+  const key = pick(validKeys);
+  const data = rangesData.vs4Bet[key];
+  const pickedHeroPos = data.heroPos;
+  const fourBetterPos = data.fourBetterPos;
+  // Раздаём только руки из 3-бет диапазона героя против данного оппонента
+  const threeBetRange = rangesData.vsRaise[`${pickedHeroPos}_vs_${fourBetterPos}`]?.threeBet || [];
+  const hand = dealHandFrom(threeBetRange);
+
+  const heroIdx      = PREFLOP_ORDER.indexOf(pickedHeroPos);
+  const fourBetterIdx = PREFLOP_ORDER.indexOf(fourBetterPos);
+
+  // Build action history: folds → fourBetter raises → folds → hero 3-bets → folds → fourBetter 4-bets
+  const actionHistory = [];
+  PREFLOP_ORDER
+    .filter(p => activePosArr.includes(p) && PREFLOP_ORDER.indexOf(p) < fourBetterIdx)
+    .forEach(p => actionHistory.push({ position: p, action: 'fold' }));
+  actionHistory.push({ position: fourBetterPos, action: 'raise', amount: 2.5 });
+  PREFLOP_ORDER
+    .filter(p => activePosArr.includes(p))
+    .filter(p => PREFLOP_ORDER.indexOf(p) > fourBetterIdx && PREFLOP_ORDER.indexOf(p) < heroIdx)
+    .forEach(p => actionHistory.push({ position: p, action: 'fold' }));
+  actionHistory.push({ position: pickedHeroPos, action: '3bet', amount: 7.5 });
+  actionHistory.push({ position: fourBetterPos, action: '4bet', amount: 20 });
+
+  return {
+    type: 'vs4Bet',
+    numPlayers,
+    heroPos: pickedHeroPos,
+    hand,
+    actionHistory,
+    villainPos: fourBetterPos,
+    availableActions: ['fold', 'call', 'jam'],
+    description: buildDescription('vs4Bet', pickedHeroPos, fourBetterPos, actionHistory)
+  };
+}
+
 function buildDescription(type, heroPos, villainPos, actionHistory) {
   if (type === 'openRaise') {
     return `Все до тебя сфолдили. Твоя очередь действовать с позиции ${heroPos}.`;
@@ -176,6 +291,12 @@ function buildDescription(type, heroPos, villainPos, actionHistory) {
   }
   if (type === 'vsLimp') {
     return `${villainPos} залимпил (1BB), все остальные сфолдили. Ты на ${heroPos}.`;
+  }
+  if (type === 'vs3Bet') {
+    return `Ты рейзнула с ${heroPos}. ${villainPos} сделал 3-бет. Все сфолдили. Твоё действие?`;
+  }
+  if (type === 'vs4Bet') {
+    return `Ты 3-бетила с ${heroPos}. ${villainPos} ответил 4-бетом. Твоё действие?`;
   }
   return '';
 }

@@ -44,10 +44,40 @@ export function showRangeModal(situation, rangesData) {
     for (const h of allHands()) {
       actionMap[h] = isoSet.has(h) ? 'raise' : callSet.has(h) ? 'call' : 'fold';
     }
+
+  } else if (type === 'vs3Bet') {
+    const key = `${heroPos}_vs_${villainPos}`;
+    const data = rangesData.vs3Bet[key];
+    const fourBetSet = new Set(data?.fourBet || []);
+    const callSet    = new Set(data?.call    || []);
+    titleText = `${heroPos} vs 3-бет ${villainPos}`;
+    noteText = data?.note || '';
+    for (const h of allHands()) {
+      actionMap[h] = fourBetSet.has(h) ? 'raise' : callSet.has(h) ? 'call' : 'fold';
+    }
+
+  } else if (type === 'vs4Bet') {
+    const key = `${heroPos}_vs_${villainPos}`;
+    const data = rangesData.vs4Bet[key];
+    const jamSet  = new Set(data?.jam  || []);
+    const callSet = new Set(data?.call || []);
+    titleText = `${heroPos} vs 4-бет ${villainPos}`;
+    noteText = data?.note || '';
+    for (const h of allHands()) {
+      actionMap[h] = jamSet.has(h) ? 'raise' : callSet.has(h) ? 'call' : 'fold';
+    }
   }
 
   document.getElementById('range-modal-title').textContent = titleText;
   document.getElementById('range-modal-note').textContent  = noteText;
+
+  const raiseLabel = document.querySelector('.leg.leg-raise');
+  if (raiseLabel) {
+    if (type === 'vs3Bet') raiseLabel.textContent = '4-Bet';
+    else if (type === 'vs4Bet') raiseLabel.textContent = 'Jam / 5-Bet';
+    else raiseLabel.textContent = 'Raise / 3-Bet';
+  }
+
   renderGrid(actionMap, hand.normalized);
   document.getElementById('range-modal').classList.remove('hidden');
 }

@@ -2,7 +2,9 @@ const ACTION_LABELS = {
   fold:  'Fold',
   call:  'Call',
   raise: 'Raise / Iso-raise',
-  '3bet': '3-Bet'
+  '3bet': '3-Bet',
+  '4bet': '4-Bet',
+  'jam':  'Jam / 5-Bet'
 };
 
 export function showFeedback(result, playerAction) {
