@@ -9,6 +9,7 @@ import { initRangeModal, showRangeModal } from './ui/RangeGrid.js?v=2';
 import { ACTIVE_POSITIONS } from './utils/constants.js';
 import { supabase, getSession, signOut, saveHandResult } from './auth/supabase.js';
 import { initAuthScreen } from './ui/AuthScreen.js';
+import { initStatsScreen } from './ui/StatsScreen.js';
 
 let rangesData = null;
 let currentSituation = null;
@@ -25,8 +26,18 @@ function showAuthScreen() {
 
 function showSettingsScreen() {
   document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('stats-screen').classList.add('hidden');
   document.getElementById('settings-screen').classList.remove('hidden');
   document.getElementById('training-screen').classList.add('hidden');
+}
+
+function showStatsScreen() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('settings-screen').classList.add('hidden');
+  document.getElementById('training-screen').classList.add('hidden');
+  const screen = document.getElementById('stats-screen');
+  screen.classList.remove('hidden');
+  initStatsScreen(currentUser);
 }
 
 function showTrainingScreen() {
@@ -123,6 +134,15 @@ document.getElementById('btn-next').addEventListener('click', nextHand);
 document.getElementById('btn-reset').addEventListener('click', () => { reset(); nextHand(); });
 document.getElementById('btn-hint').addEventListener('click', () => {
   if (currentSituation && rangesData) showRangeModal(currentSituation, rangesData);
+});
+document.getElementById('btn-stats').addEventListener('click', showStatsScreen);
+document.getElementById('btn-stats-close').addEventListener('click', () => {
+  document.getElementById('stats-screen').classList.add('hidden');
+  if (currentSituation) {
+    showTrainingScreen();
+  } else {
+    showSettingsScreen();
+  }
 });
 document.getElementById('btn-logout').addEventListener('click', async () => {
   await signOut();

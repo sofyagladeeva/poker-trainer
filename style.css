@@ -483,6 +483,235 @@ body {
 }
 .btn-guest:hover { color: #999; }
 
+/* === Экран статистики === */
+#stats-screen {
+  padding: 24px 0 40px;
+}
+
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.stats-header .settings-title { margin-bottom: 0; }
+
+.btn-stats-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color .15s;
+}
+.btn-stats-close:hover { color: var(--text); }
+
+.stats-loading, .stats-empty, .stats-guest {
+  color: #666;
+  font-size: 14px;
+  padding: 24px 0;
+}
+
+.stats-overview {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.stats-overview-pct {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+}
+.stats-overview-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.stats-section {
+  margin-bottom: 28px;
+}
+.stats-section-title {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Строки позиций/ситуаций */
+.stat-row {
+  display: grid;
+  grid-template-columns: 64px 1fr 44px 56px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.stat-row-label {
+  font-size: 13px;
+  font-family: monospace;
+  color: var(--text);
+}
+.stat-bar-wrap {
+  background: #1a1a1a;
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+.stat-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+.stat-row-pct {
+  font-size: 13px;
+  font-weight: bold;
+  text-align: right;
+}
+.stat-row-count {
+  font-size: 11px;
+  color: #555;
+  text-align: right;
+}
+
+/* Тепловая карта */
+.stats-heatmap-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.stats-heatmap-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.stats-heatmap {
+  display: inline-block;
+  min-width: 360px;
+}
+.heatmap-row {
+  display: flex;
+}
+.hm-corner {
+  width: 32px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.hm-header {
+  width: 32px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: bold;
+  color: #555;
+  flex-shrink: 0;
+}
+.hm-cell {
+  width: 32px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7.5px;
+  font-family: monospace;
+  font-weight: bold;
+  border-radius: 2px;
+  cursor: default;
+  flex-shrink: 0;
+  transition: opacity .15s;
+}
+.hm-cell:hover { opacity: .75; }
+
+/* Инсайты */
+.stats-insights {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.stats-insights li {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.5;
+  padding: 10px 14px;
+  background: #161616;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+}
+.stats-insights li strong { color: var(--accent); }
+.stats-insights-good {
+  font-size: 13px;
+  color: var(--correct);
+  padding: 10px 14px;
+  background: #0a1f12;
+  border-left: 3px solid var(--correct);
+  border-radius: 0 6px 6px 0;
+}
+.stats-heatmap-hint {
+  font-size: 11px;
+  color: #555;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+.stats-heatmap-few {
+  font-size: 12px;
+  color: #666;
+  margin-top: 6px;
+  font-style: italic;
+}
+/* Объяснение тепловой карты */
+.heatmap-explainer {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.heatmap-explainer p {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.5;
+}
+.heatmap-explainer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+.hex-zone {
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 8px 6px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+.hex-zone span { font-weight: normal; font-size: 10px; color: #888; }
+.hex-suited  { background: rgba(82,183,136,.12); color: #52b788; border: 1px solid rgba(82,183,136,.3); }
+.hex-pairs   { background: rgba(244,162,97,.08); color: var(--accent); border: 1px solid rgba(244,162,97,.2); }
+.hex-offsuit { background: rgba(233,196,106,.1); color: #e9c46a; border: 1px solid rgba(233,196,106,.25); }
+.heatmap-explainer-tip {
+  font-size: 12px;
+  color: #888;
+}
+
+.stats-heatmap-labels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 4px 20px;
+  font-size: 10px;
+  color: #555;
+  font-style: italic;
+}
+.hm-label-suited  { color: #52b788; }
+.hm-label-offsuit { color: #e9c46a; }
+
 /* Email пользователя в шапке */
 .auth-user-label {
   font-size: 12px;

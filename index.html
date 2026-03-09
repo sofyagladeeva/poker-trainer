@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Poker Trainer — Префлоп</title>
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 
@@ -18,9 +18,18 @@
       <span class="auth-user-label hidden" id="auth-user-label"></span>
       <button class="btn-reset hidden" id="btn-logout" title="Выйти">⎋</button>
       <button class="btn-reset" id="btn-reset" title="Сбросить сессию">↺</button>
+      <button class="btn-settings" id="btn-stats" title="Статистика"><svg width="14" height="13" viewBox="0 0 14 13" fill="currentColor"><rect x="0" y="5" width="3" height="8"/><rect x="5" y="2" width="3" height="11"/><rect x="10" y="0" width="3" height="13"/></svg></button>
       <button class="btn-settings" id="btn-settings" title="Настройки">⚙</button>
     </div>
   </header>
+
+  <!-- Экран статистики -->
+  <section id="stats-screen" class="hidden">
+    <div class="stats-header">
+      <h2 class="settings-title">Статистика</h2>
+      <button class="btn-stats-close" id="btn-stats-close">✕</button>
+    </div>
+  </section>
 
   <!-- Экран авторизации -->
   <section id="auth-screen" class="hidden">
@@ -191,6 +200,6 @@
     </div>
   </div>
 
-<script type="module" src="js/main.js?v=3"></script>
+<script type="module" src="js/main.js?v=4"></script>
 </body>
 </html>
