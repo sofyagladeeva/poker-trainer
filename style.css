@@ -507,10 +507,21 @@ body {
 }
 .btn-stats-close:hover { color: var(--text); }
 
-.stats-loading, .stats-empty, .stats-guest {
+.stats-loading, .stats-empty {
   color: #666;
   font-size: 14px;
   padding: 24px 0;
+}
+.stats-guest {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px 0;
+}
+.stats-guest p {
+  color: #666;
+  font-size: 14px;
 }
 
 .stats-overview {

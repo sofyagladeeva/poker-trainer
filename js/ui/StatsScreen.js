@@ -130,7 +130,11 @@ export async function initStatsScreen(currentUser) {
     screen.innerHTML = `
       <div class="stats-guest">
         <p>Войди в аккаунт — и здесь появится твоя статистика по всем сыгранным рукам.</p>
+        <button class="btn-start" id="btn-stats-login">Войти / Зарегистрироваться</button>
       </div>`;
+    document.getElementById('btn-stats-login').addEventListener('click', () => {
+      screen.dispatchEvent(new CustomEvent('go-login'));
+    });
     return;
   }
 

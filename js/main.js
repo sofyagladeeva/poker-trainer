@@ -37,6 +37,14 @@ function showStatsScreen() {
   document.getElementById('training-screen').classList.add('hidden');
   const screen = document.getElementById('stats-screen');
   screen.classList.remove('hidden');
+  screen.addEventListener('go-login', () => {
+    screen.classList.add('hidden');
+    showAuthScreen();
+    initAuthScreen({
+      onSuccess: (user) => { setUser(user); showSettingsScreen(); },
+      onGuestMode: () => { setUser(null); showSettingsScreen(); }
+    });
+  }, { once: true });
   initStatsScreen(currentUser);
 }
 
