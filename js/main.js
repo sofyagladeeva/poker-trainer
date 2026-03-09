@@ -7,14 +7,24 @@ import { record, reset, render as renderStats } from './ui/SessionTracker.js';
 import { initGlossary } from './ui/GlossaryPopup.js';
 import { initRangeModal, showRangeModal } from './ui/RangeGrid.js?v=2';
 import { ACTIVE_POSITIONS } from './utils/constants.js';
+import { supabase, getSession, signOut, saveHandResult } from './auth/supabase.js';
+import { initAuthScreen } from './ui/AuthScreen.js';
 
 let rangesData = null;
 let currentSituation = null;
+let currentUser = null; // null = гость
 let trainingSettings = { tableSize: 'random', heroPos: 'random', situationType: 'random' };
 
-// === Настройки ===
+// === Навигация по экранам ===
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').classList.remove('hidden');
+  document.getElementById('settings-screen').classList.add('hidden');
+  document.getElementById('training-screen').classList.add('hidden');
+}
 
 function showSettingsScreen() {
+  document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('settings-screen').classList.remove('hidden');
   document.getElementById('training-screen').classList.add('hidden');
 }
@@ -22,6 +32,20 @@ function showSettingsScreen() {
 function showTrainingScreen() {
   document.getElementById('settings-screen').classList.add('hidden');
   document.getElementById('training-screen').classList.remove('hidden');
+}
+
+function setUser(user) {
+  currentUser = user;
+  const label = document.getElementById('auth-user-label');
+  const logoutBtn = document.getElementById('btn-logout');
+  if (user) {
+    label.textContent = user.email;
+    label.classList.remove('hidden');
+    logoutBtn.classList.remove('hidden');
+  } else {
+    label.classList.add('hidden');
+    logoutBtn.classList.add('hidden');
+  }
 }
 
 // Обновляет доступность чипов позиций при смене размера стола
@@ -100,6 +124,10 @@ document.getElementById('btn-reset').addEventListener('click', () => { reset(); 
 document.getElementById('btn-hint').addEventListener('click', () => {
   if (currentSituation && rangesData) showRangeModal(currentSituation, rangesData);
 });
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await signOut();
+  window.location.reload();
+});
 
 async function init() {
   rangesData = await loadRanges();
@@ -107,7 +135,27 @@ async function init() {
   initRangeModal();
   renderStats();
   initSettingsUI();
-  showSettingsScreen();
+
+  // Слушаем изменения auth-состояния (включая редирект после Google)
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session?.user && document.getElementById('auth-screen') && !document.getElementById('auth-screen').classList.contains('hidden')) {
+      setUser(session.user);
+      showSettingsScreen();
+    }
+  });
+
+  // Проверяем текущую сессию
+  const session = await getSession();
+  if (session?.user) {
+    setUser(session.user);
+    showSettingsScreen();
+  } else {
+    showAuthScreen();
+    initAuthScreen({
+      onSuccess: (user) => { setUser(user); showSettingsScreen(); },
+      onGuestMode: () => { setUser(null); showSettingsScreen(); }
+    });
+  }
 }
 
 function nextHand() {
@@ -157,6 +205,20 @@ function onAction(action) {
   const result = evaluate(currentSituation, action);
   record(result.correct);
   showFeedback(result, action);
+
+  // Сохраняем в Supabase если залогинены
+  if (currentUser) {
+    saveHandResult({
+      userId:        currentUser.id,
+      hand:          currentSituation.hand.normalized,
+      situationType: currentSituation.type,
+      heroPos:       currentSituation.heroPos,
+      actionTaken:   action,
+      correct:       result.correct
+    }).then(({ error }) => {
+      if (error) console.error('saveHandResult error:', error);
+    });
+  }
 }
 
 function buildSituationHTML(sit) {

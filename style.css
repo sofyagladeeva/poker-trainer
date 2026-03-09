@@ -347,3 +347,148 @@ body {
   transition: background .2s;
 }
 .btn-start:hover { background: #3da876; }
+
+/* === Экран авторизации === */
+#auth-screen {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0 40px;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--green-pale);
+  margin-bottom: 2px;
+}
+
+.auth-subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-top: -8px;
+  margin-bottom: 6px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.auth-input {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+}
+.auth-input:focus { border-color: var(--accent); }
+.auth-input::placeholder { color: #555; }
+
+.auth-error {
+  font-size: 13px;
+  color: var(--wrong);
+  min-height: 18px;
+}
+
+.btn-auth-submit {
+  margin-top: 0;
+  width: 100%;
+  padding: 12px;
+  background: var(--correct);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-auth-submit:hover:not(:disabled) { background: #3da876; }
+.btn-auth-submit:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-auth-toggle {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.btn-auth-toggle:hover { opacity: .8; }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #444;
+  font-size: 12px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid #333;
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.btn-google:hover:not(:disabled) { opacity: .88; }
+.btn-google:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-guest {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: center;
+  transition: color .15s;
+}
+.btn-guest:hover { color: #999; }
+
+/* Email пользователя в шапке */
+.auth-user-label {
+  font-size: 12px;
+  color: #666;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
