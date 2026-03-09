@@ -10,7 +10,7 @@ import { ACTIVE_POSITIONS } from './utils/constants.js';
 
 let rangesData = null;
 let currentSituation = null;
-let trainingSettings = { tableSize: 'random', heroPos: 'random' };
+let trainingSettings = { tableSize: 'random', heroPos: 'random', situationType: 'random' };
 
 // === Настройки ===
 
@@ -44,7 +44,7 @@ function updatePositionChips(tableSize) {
 }
 
 function initSettingsUI() {
-  trainingSettings = { tableSize: 'random', heroPos: 'random' };
+  trainingSettings = { tableSize: 'random', heroPos: 'random', situationType: 'random' };
 
   // Предзаполнить чипы стола
   document.querySelectorAll('#chips-table .chip').forEach(chip => {
@@ -66,6 +66,16 @@ function initSettingsUI() {
       document.querySelectorAll('#chips-pos .chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       trainingSettings.heroPos = chip.dataset.val;
+    });
+  });
+
+  // Чипы ситуации
+  document.querySelectorAll('#chips-situation .chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.val === trainingSettings.situationType);
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#chips-situation .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      trainingSettings.situationType = chip.dataset.val;
     });
   });
 
@@ -152,19 +162,19 @@ function onAction(action) {
 function buildSituationHTML(sit) {
   const posLink = (p) => `<span data-term="${p.toLowerCase()}">${p}</span>`;
   if (sit.type === 'openRaise') {
-    return `Все до тебя сфолдили. Твоя очередь открыться с <strong>${posLink(sit.heroPos)}</strong>.`;
+    return `Все до тебя <span data-term="fold">сфолдили</span>. Твоя очередь открыться с <strong>${posLink(sit.heroPos)}</strong>.`;
   }
   if (sit.type === 'vsRaise') {
-    return `<strong>${posLink(sit.villainPos)}</strong> сделал <span data-term="open-raise">рейз</span> (2.5BB). Все остальные сфолдили. Ты на <strong>${posLink(sit.heroPos)}</strong>. Твоё действие?`;
+    return `<strong>${posLink(sit.villainPos)}</strong> сделал <span data-term="open-raise">рейз</span> (2.5BB). Все остальные <span data-term="fold">сфолдили</span>. Ты на <strong>${posLink(sit.heroPos)}</strong>. Твоё действие?`;
   }
   if (sit.type === 'vsLimp') {
-    return `<strong>${posLink(sit.villainPos)}</strong> <span data-term="limp">залимпил</span> (1BB). Все остальные сфолдили. Ты на <strong>${posLink(sit.heroPos)}</strong>. Что делаешь?`;
+    return `<strong>${posLink(sit.villainPos)}</strong> <span data-term="limp">залимпил</span> (1BB). Все остальные <span data-term="fold">сфолдили</span>. Ты на <strong>${posLink(sit.heroPos)}</strong>. Что делаешь?`;
   }
   if (sit.type === 'vs3Bet') {
-    return `Ты сделала <span data-term="open-raise">рейз</span> с <strong>${posLink(sit.heroPos)}</strong>. <strong>${posLink(sit.villainPos)}</strong> сделал <span data-term="3bet">3-бет</span> (7.5BB). Все остальные сфолдили. Твоё действие?`;
+    return `Ты сделала <span data-term="open-raise">рейз</span> с <strong>${posLink(sit.heroPos)}</strong>. <strong>${posLink(sit.villainPos)}</strong> сделал <span data-term="3bet">3-бет</span> (7.5BB). Все остальные <span data-term="fold">сфолдили</span>. Твоё действие?`;
   }
   if (sit.type === 'vs4Bet') {
-    return `Ты сделала <span data-term="3bet">3-бет</span> с <strong>${posLink(sit.heroPos)}</strong>. <strong>${posLink(sit.villainPos)}</strong> ответил <strong>4-бетом</strong> (20BB). Все сфолдили. Джэм, колл или фолд?`;
+    return `Ты сделала <span data-term="3bet">3-бет</span> с <strong>${posLink(sit.heroPos)}</strong>. <strong>${posLink(sit.villainPos)}</strong> ответил <span data-term="4bet"><strong>4-бетом</strong></span> (20BB). Все <span data-term="fold">сфолдили</span>. <span data-term="push">Джэм</span>, <span data-term="call">колл</span> или <span data-term="fold">фолд</span>?`;
   }
   return sit.description || '';
 }

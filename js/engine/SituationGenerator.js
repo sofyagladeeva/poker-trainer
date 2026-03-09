@@ -2,20 +2,31 @@ import { ACTIVE_POSITIONS, PREFLOP_ORDER } from '../utils/constants.js';
 import { shuffle, pick, randInt } from '../utils/random.js';
 import { normalizeHand, buildDeck } from './HandEvaluator.js';
 
+// Маппинг пресета ситуации → разрешённые типы
+const SITUATION_TYPE_MAP = {
+  random:        ['openRaise', 'vsRaise', 'vs3Bet', 'vs4Bet'],
+  openRaise:     ['openRaise'],
+  vsRaise:       ['vsRaise'],
+  vsLimp:        ['vsLimp'],
+  aggression34:  ['vs3Bet', 'vs4Bet'],
+  allAggression: ['vsRaise', 'vs3Bet', 'vs4Bet'],
+};
+
 // Генерирует случайную ситуацию для тренажёра
-// filters: { tableSize: 'random'|4..9, heroPos: 'random'|'BTN'|... }
+// filters: { tableSize: 'random'|4..9, heroPos: 'random'|'BTN'|..., situationType: 'random'|'openRaise'|... }
 export function generateSituation(rangesData, filters = {}) {
   const tableSizePref = filters.tableSize && filters.tableSize !== 'random' ? Number(filters.tableSize) : null;
   const heroPosPref   = filters.heroPos   && filters.heroPos   !== 'random' ? filters.heroPos   : null;
+  const allowedTypes  = SITUATION_TYPE_MAP[filters.situationType] || SITUATION_TYPE_MAP.random;
 
   const numPlayers  = tableSizePref || randInt(4, 9);
   const activePosArr = ACTIVE_POSITIONS[numPlayers];
 
-  const pool = buildTypePool(rangesData, activePosArr, heroPosPref);
+  const pool = buildTypePool(rangesData, activePosArr, heroPosPref, allowedTypes);
 
   if (!pool.length) {
-    // Несовместимая комбинация позиции и стола — пробуем с рандомным столом
-    return generateSituation(rangesData, { tableSize: 'random', heroPos: filters.heroPos });
+    // Несовместимая комбинация — пробуем с рандомным столом
+    return generateSituation(rangesData, { tableSize: 'random', heroPos: filters.heroPos, situationType: filters.situationType });
   }
 
   const type = pick(pool);
@@ -26,41 +37,47 @@ export function generateSituation(rangesData, filters = {}) {
   if (type === 'vs4Bet')    return genVs4Bet(numPlayers, activePosArr, rangesData, heroPosPref);
 }
 
-function buildTypePool(rangesData, activePosArr, heroPos) {
+function buildTypePool(rangesData, activePosArr, heroPos, allowedTypes = ['openRaise', 'vsRaise', 'vsLimp', 'vs3Bet', 'vs4Bet']) {
+  const allow = new Set(allowedTypes);
   const pool = [];
 
-  // openRaise: valid если heroPos в rangesData.openRaise и за этим столом
-  const canOpenRaise = !heroPos
-    || (rangesData.openRaise[heroPos] && activePosArr.includes(heroPos));
-  if (canOpenRaise) pool.push('openRaise', 'openRaise', 'openRaise');
+  if (allow.has('openRaise')) {
+    const canOpenRaise = !heroPos
+      || (rangesData.openRaise[heroPos] && activePosArr.includes(heroPos));
+    if (canOpenRaise) pool.push('openRaise', 'openRaise', 'openRaise');
+  }
 
-  // vsRaise: valid если есть хоть один matchup с этим heroPos за этим столом
-  const hasVsRaise = Object.values(rangesData.vsRaise).some(d =>
-    activePosArr.includes(d.heroPos) && activePosArr.includes(d.raiserPos) &&
-    (!heroPos || d.heroPos === heroPos)
-  );
-  if (hasVsRaise) pool.push('vsRaise', 'vsRaise');
+  if (allow.has('vsRaise')) {
+    const hasVsRaise = Object.values(rangesData.vsRaise).some(d =>
+      activePosArr.includes(d.heroPos) && activePosArr.includes(d.raiserPos) &&
+      (!heroPos || d.heroPos === heroPos)
+    );
+    if (hasVsRaise) pool.push('vsRaise', 'vsRaise');
+  }
 
-  // vsLimp: valid если есть хоть одна запись для этого heroPos за этим столом
-  const hasVsLimp = Object.keys(rangesData.vsLimp).some(key => {
-    const pos = key.split('_vs_')[0];
-    return activePosArr.includes(pos) && (!heroPos || pos === heroPos);
-  });
-  if (hasVsLimp) pool.push('vsLimp');
+  if (allow.has('vsLimp')) {
+    const hasVsLimp = Object.keys(rangesData.vsLimp).some(key => {
+      const pos = key.split('_vs_')[0];
+      return activePosArr.includes(pos) && (!heroPos || pos === heroPos);
+    });
+    if (hasVsLimp) pool.push('vsLimp');
+  }
 
-  // vs3Bet: hero opened, villain 3-bet
-  const hasVs3Bet = Object.values(rangesData.vs3Bet).some(d =>
-    activePosArr.includes(d.heroPos) && activePosArr.includes(d.threeBetterPos) &&
-    (!heroPos || d.heroPos === heroPos)
-  );
-  if (hasVs3Bet) pool.push('vs3Bet');
+  if (allow.has('vs3Bet')) {
+    const hasVs3Bet = Object.values(rangesData.vs3Bet).some(d =>
+      activePosArr.includes(d.heroPos) && activePosArr.includes(d.threeBetterPos) &&
+      (!heroPos || d.heroPos === heroPos)
+    );
+    if (hasVs3Bet) pool.push('vs3Bet');
+  }
 
-  // vs4Bet: hero 3-bet, villain 4-bet
-  const hasVs4Bet = Object.values(rangesData.vs4Bet).some(d =>
-    activePosArr.includes(d.heroPos) && activePosArr.includes(d.fourBetterPos) &&
-    (!heroPos || d.heroPos === heroPos)
-  );
-  if (hasVs4Bet) pool.push('vs4Bet');
+  if (allow.has('vs4Bet')) {
+    const hasVs4Bet = Object.values(rangesData.vs4Bet).some(d =>
+      activePosArr.includes(d.heroPos) && activePosArr.includes(d.fourBetterPos) &&
+      (!heroPos || d.heroPos === heroPos)
+    );
+    if (hasVs4Bet) pool.push('vs4Bet');
+  }
 
   return pool;
 }

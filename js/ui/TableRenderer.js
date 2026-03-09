@@ -75,7 +75,7 @@ export function renderTable(situation) {
       actionLabel.setAttribute('font-size', 9);
       actionLabel.setAttribute('fill', action.action === 'fold' ? '#555' : '#ffb347');
       actionLabel.setAttribute('font-family', 'monospace');
-      const labels = { fold: 'fold', raise: `raise ${action.amount}bb`, limp: 'limp 1bb', call: 'call' };
+      const labels = { fold: 'пас', raise: `рейз ${action.amount}bb`, limp: 'лимп 1bb', call: 'колл', '3bet': '3-бет 7.5bb', '4bet': '4-бет 20bb' };
       actionLabel.textContent = labels[action.action] || action.action;
       g.appendChild(actionLabel);
     }
@@ -99,6 +99,6 @@ export function renderTable(situation) {
 
   // Текст по центру стола
   const desc = document.getElementById('table-desc');
-  const typeLabels = { openRaise: 'Open raise', vsRaise: 'Vs raise', vsLimp: 'Vs limp' };
-  desc.textContent = `${typeLabels[situation.type] || ''} · ${numPlayers} players`;
+  const typeLabels = { openRaise: 'Открытие', vsRaise: 'Против рейза', vsLimp: 'Против лимпа', vs3Bet: 'Против 3-бета', vs4Bet: 'Против 4-бета' };
+  desc.textContent = `${typeLabels[situation.type] || ''} · ${numPlayers} игроков`;
 }
