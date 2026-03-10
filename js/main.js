@@ -165,10 +165,14 @@ async function init() {
   initSettingsUI();
 
   // Слушаем изменения auth-состояния (включая редирект после Google)
-  supabase.auth.onAuthStateChange((_event, session) => {
-    if (session?.user && document.getElementById('auth-screen') && !document.getElementById('auth-screen').classList.contains('hidden')) {
-      setUser(session.user);
-      showSettingsScreen();
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      const onApp = !document.getElementById('settings-screen').classList.contains('hidden')
+                 || !document.getElementById('training-screen').classList.contains('hidden');
+      if (!onApp) {
+        setUser(session.user);
+        showSettingsScreen();
+      }
     }
   });
 
