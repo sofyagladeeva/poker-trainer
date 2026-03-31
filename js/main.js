@@ -256,6 +256,9 @@ function onAction(action) {
 function buildSituationHTML(sit) {
   const posLink = (p) => `<span data-term="${p.toLowerCase()}">${p}</span>`;
   if (sit.type === 'openRaise') {
+    if (sit.actionHistory.length === 0) {
+      return `Ты первый после блайндов — первое слово за тобой. Открываешься с <strong>${posLink(sit.heroPos)}</strong>?`;
+    }
     return `Все до тебя <span data-term="fold">сфолдили</span>. Твоя очередь открыться с <strong>${posLink(sit.heroPos)}</strong>.`;
   }
   if (sit.type === 'vsRaise') {
