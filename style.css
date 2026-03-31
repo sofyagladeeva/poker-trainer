@@ -145,15 +145,25 @@ body {
 .action-btn.selected-wrong   { border-color: var(--wrong);   color: var(--wrong);   background: #1f0a0a; }
 .action-btn.reveal-correct   { border-color: var(--correct); color: var(--correct); }
 
-/* === Фидбек === */
+/* === Фидбек (фиксированная панель внизу экрана) === */
 .feedback-section {
-  background: #161616;
-  border-radius: 10px;
-  padding: 18px 20px;
-  border: 1px solid #2a2a2a;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 720px;
+  z-index: 100;
+  background: #1a1a1a;
+  border-top: 3px solid #2a2a2a;
+  border-radius: 14px 14px 0 0;
+  padding: 16px 20px 28px;
+  box-shadow: 0 -6px 32px rgba(0,0,0,.85);
+  max-height: 65vh;
+  overflow-y: auto;
 }
-.feedback-section.correct { border-color: var(--correct); }
-.feedback-section.wrong   { border-color: var(--wrong); }
+.feedback-section.correct { border-top-color: var(--correct); }
+.feedback-section.wrong   { border-top-color: var(--wrong); }
 
 .feedback-result {
   font-size: 18px;
